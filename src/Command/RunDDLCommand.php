@@ -41,27 +41,24 @@ class RunDDLCommand extends BaseCommand {
 		/** @var FormatterHelper $formatter */
 		$formatter = $this->getHelper("formatter");
 
-		$progressSection = $output->section();
-		$info = $output->section();
-		$errorSection = $output->section();
 
 		$schemaReader = new SchemaReader($this->getSource());
 		$tables = $schemaReader->getDatabaseTables();
 		$tablesCount = count($tables);
 		$line = $formatter->formatSection("SOURCE", "Found $tablesCount tables in database.");
-		$info->writeln($line);
+		$output->writeln($line);
 
-		$progress = new ProgressBar($progressSection, $tablesCount);
+		$progress = new ProgressBar($output, $tablesCount);
 		/** @noinspection PhpParamsInspection */
 		$progress->setFormat("verbose");
 		$progress->start();
-		$info->writeln("");
+		$output->writeln("");
 
 		$success = 0;
 
 		foreach($tables as $table) {
 			$line = $formatter->formatSection("SOURCE", $formatter->formatBlock("Table `$table->TABLE_NAME`", "comment"));
-			$info->overwrite($line);
+			$output->writeln($line);
 
 			$ddlQuery = "";
 			try {
@@ -70,9 +67,9 @@ class RunDDLCommand extends BaseCommand {
 
 				$this->getDestination()->query($ddlQuery);
 
-				/*$formatted = $formatter->formatBlock("Table was successfully created.", "success");
+				$formatted = $formatter->formatBlock("Table was successfully created.", "success");
 				$line = $formatter->formatSection("DESTINATION", $formatted);
-				$info->writeln($line);*/
+				$output->writeln($line);
 
 				$success++;
 			} catch (\Exception $e) {
@@ -81,18 +78,18 @@ class RunDDLCommand extends BaseCommand {
 					$e->getMessage()
 				], "error");
 				$line = $formatter->formatSection("DESTINATION", $formatted);
-				$errorSection->writeln($line);
+				$output->writeln($line);
 				Debugger::log($e->getMessage(), Debugger::EXCEPTION);
 				if($ddlQuery !== "") {
 					Debugger::log($ddlQuery, Debugger::EXCEPTION);
 				}
 			}
 
-			$progressSection->clear();
 			$progress->advance();
+			$output->writeln("");
 		}
 
-		$info->overwrite(
+		$output->writeln(
 			$formatter->formatSection("DESTINATION",
 				$formatter->formatBlock("Successfully created $success tables of $tablesCount.", "success")
 			)

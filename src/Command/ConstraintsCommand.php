@@ -40,17 +40,16 @@ class ConstraintsCommand extends BaseCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		/** @var FormatterHelper $formatter */
 		$formatter = $this->getHelper("formatter");
-		$progressSection = $output->section();
-		$info = $output->section();
 
 		$schemaReader = new SchemaReader($this->getSource());
 		$tables = $schemaReader->getDatabaseTables();
 		$tableCount = count($tables);
 
-		$progress = new ProgressBar($progressSection, $tableCount);
+		$progress = new ProgressBar($output, $tableCount);
 		/** @noinspection PhpParamsInspection */
 		$progress->setFormat("verbose");
 		$progress->start();
+		$output->writeln("");
 
 		$this->getDestination()->query("SET FOREIGN_KEY_CHECKS=0;");
 
@@ -58,7 +57,7 @@ class ConstraintsCommand extends BaseCommand {
 		foreach($tables as $table) {
 			$formatted = $formatter->formatBlock("Generating constraints for table `$table->TABLE_NAME`", "comment");
 			$line = $formatter->formatSection("SOURCE", $formatted);
-			$info->overwrite($line);
+			$output->writeln($line);
 			$query = "";
 
 			$constraints = $schemaReader->getTableConstraints($table->TABLE_NAME);
@@ -66,7 +65,7 @@ class ConstraintsCommand extends BaseCommand {
 			foreach($constraints as $constraint) {
 				try {
 					$line = $formatter->formatSection("SOURCE", "Foreign Key Constraint `$constraint->CONSTRAINT_NAME`");
-					$info->writeln($line);
+					$output->writeln($line);
 
 					$constraintGenerator = new ConstraintGenerator($schemaReader, $constraint->CONSTRAINT_NAME);
 					$query = $constraintGenerator->generate();
@@ -78,7 +77,7 @@ class ConstraintsCommand extends BaseCommand {
 						$e->getMessage()
 					], "error");
 					$line = $formatter->formatSection("DESTINATION", $formatted);
-					$info->writeln($line);
+					$output->writeln($line);
 					Debugger::log($e->getMessage(), Debugger::EXCEPTION);
 					if($query != "") {
 						Debugger::log($query, Debugger::EXCEPTION);
@@ -88,31 +87,31 @@ class ConstraintsCommand extends BaseCommand {
 
 			if(empty($constraints)) {
 				$line = $formatter->formatSection("SOURCE", "Table does not have any constraints.");
-				$info->writeln($line);
+				$output->writeln($line);
 			} else {
 				if($ok) {
 					$formatted = $formatter->formatBlock("All constraints was successfully created.", "success");
 					$line = $formatter->formatSection("DESTINATION", $formatted);
-					$info->writeln($line);
+					$output->writeln($line);
 				} else {
 					$formatted = $formatter->formatBlock("Error during constraints generating has appeared.", "warning");
 					$line = $formatter->formatSection("DESTINATION", $formatted);
-					$info->writeln($line);
+					$output->writeln($line);
 				}
 			}
 			if($ok) {
 				$success++;
 			}
 
-			$progressSection->clear();
 			$progress->advance();
+			$output->writeln("");
 		}
 
 		$this->getDestination()->query("SET FOREIGN_KEY_CHECKS=1;");
 
 		$formatted = $formatter->formatBlock("Successfully created constraints for $success tables of $tableCount.", "info");
 		$line = $formatter->formatSection("DESTINATION", $formatted);
-		$info->overwrite($line);
+		$output->writeln($line);
 
 		return 0;
 	}

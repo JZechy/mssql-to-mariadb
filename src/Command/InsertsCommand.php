@@ -47,9 +47,6 @@ class InsertsCommand extends BaseCommand {
 		/** @var FormatterHelper $formatter */
 		$formatter = $this->getHelper("formatter");
 
-		$progressSection = $output->section();
-		$info = $output->section();
-		$insertProgressSection = $output->section();
 
 		$schemaReader = new SchemaReader($this->getSource());
 		$tables = $schemaReader->getDatabaseTables();
@@ -57,22 +54,22 @@ class InsertsCommand extends BaseCommand {
 		$dataReader = new DataReader($this->getSource());
 		$dataWriter = new DataWriter($this->getDestination());
 
-		$progress = new ProgressBar($progressSection, count($tables));
+		$progress = new ProgressBar($output, count($tables));
 		/** @noinspection PhpParamsInspection */
 		$progress->setFormat("verbose");
 		$progress->start();
+		$output->writeln("");
 
 		$onSelect = 50000;
 
 		foreach($tables as $table) {
-			$info->overwrite(
+			$output->writeln(
 				$formatter->formatSection("SOURCE", $formatter->formatBlock("Exporting data for table `$table->TABLE_NAME`", "comment"))
 			);
 			$rows = $dataReader->count($table->TABLE_NAME);
-			$info->writeln(
+			$output->writeln(
 				$formatter->formatSection("SOURCE", "Found $rows rows.")
 			);
-			$insertProgress = new ProgressBar($insertProgressSection, $rows);
 			$iterations = ceil($rows / $onSelect);
 			$primaryKeys = $schemaReader->getPrimaryKey($table->TABLE_NAME);
 			$pk = null;
@@ -92,7 +89,7 @@ class InsertsCommand extends BaseCommand {
 						Debugger::log($e->getMessage(), Debugger::EXCEPTION);
 						Debugger::log(RowHelper::stringifyRow($row), Debugger::EXCEPTION);
 
-						$info->writeln(
+						$output->writeln(
 							$formatter->formatSection(
 								"DESTINATION",
 								"Row `" . RowHelper::stringifyRow($row) . "` could not be inserted.",
@@ -100,16 +97,14 @@ class InsertsCommand extends BaseCommand {
 							)
 						);
 					}
-					$insertProgress->advance();
 				}
 			}
 
-			$insertProgressSection->clear();
-			$progressSection->clear();
 			$progress->advance();
+			$output->writeln("");
 		}
 
-		$info->overwrite(
+		$output->writeln(
 			$formatter->formatSection(
 				"DESTINATION",
 				$formatter->formatBlock("All rows was successfully exported to destination.", "success")
