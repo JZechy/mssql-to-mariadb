@@ -1,0 +1,30 @@
+{
+	"name": "jzechy/mssql-to-mariadb",
+	"description": "Migration tool from MS SQL to Maria DB.",
+	"authors": [
+		{
+			"name": "Jan 'Zechy' Zechovský",
+			"email": "email@zechy.cz",
+			"homepage": "https://zechy"
+		}
+	],
+	"require": {
+		"php": ">=7.2",
+		"ext-sqlsrv": "*",
+		"ext-mysqli": "*",
+		"ext-json": "*",
+		"ext-iconv": "*",
+		"nextras/dbal": "^v3.1",
+		"symfony/console": "^v4.2",
+		"nette/neon": "^v3.0",
+		"tracy/tracy": "^v2.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"Zet\\DbMigration\\": "src"
+		}
+	},
+	"scripts": {
+		"ddl": "php application.php migration:run-ddl"
+	}
+}
