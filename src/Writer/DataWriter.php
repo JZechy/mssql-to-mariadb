@@ -31,16 +31,11 @@ class DataWriter {
 	 * @param Row    $data
 	 * @throws \Nextras\Dbal\QueryException
 	 */
-	public function insert(string $tableName, array $columns, Row $data): void {
+	public function insert(string $tableName, array $columns, Row $data) {
 		$insertData = [];
 		foreach($columns as $column) {
 			$columnName = $column->COLUMN_NAME;
-			$value = $data->$columnName;
-			/*if(is_string($value)) {
-				$value = EncodingHelper::toUTF8($value);
-			}*/
-
-			$insertData[$columnName] = $value;
+			$insertData[$columnName] = $data->$columnName;
 		}
 
 		$this->connection->query("insert into `$tableName` %values", $insertData);

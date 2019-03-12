@@ -41,7 +41,7 @@ final class Bootstrap {
 	/**
 	 *
 	 */
-	public function run(): void {
+	public function run() {
 		Debugger::$logDirectory = __DIR__ . "/../log";
 
 		$application = new Application();
@@ -60,7 +60,7 @@ final class Bootstrap {
 	/**
 	 * @throws FileNotFoundException
 	 */
-	private function loadConfiguration(): void {
+	private function loadConfiguration() {
 		if(!file_exists($this->configfile)) {
 			throw new FileNotFoundException("File `config.neon` was not found.");
 		}

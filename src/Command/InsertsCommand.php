@@ -28,7 +28,7 @@ class InsertsCommand extends BaseCommand {
 	/**
 	 *
 	 */
-	protected function configure(): void {
+	protected function configure() {
 		$this->setName(self::$defaultName);
 		$this->setDescription("Inserts all data from source to destination.");
 	}

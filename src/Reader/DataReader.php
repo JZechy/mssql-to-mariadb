@@ -44,7 +44,7 @@ class DataReader {
 	 * @return Row[]
 	 * @throws \Nextras\Dbal\QueryException
 	 */
-	public function select(string $tableName, int $limit, int $offset, ?string $primaryKey = null): array {
+	public function select(string $tableName, int $limit, int $offset, string $primaryKey = null): array {
 		if($primaryKey !== null) {
 			return $this->connection->query("
 				select * from [$tableName] 

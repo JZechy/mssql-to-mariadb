@@ -54,7 +54,7 @@ abstract class BaseCommand extends Command {
 	 * @param InputInterface  $input
 	 * @param OutputInterface $output
 	 */
-	protected function interact(InputInterface $input, OutputInterface $output): void {
+	protected function interact(InputInterface $input, OutputInterface $output) {
 		$output->getFormatter()->setStyle("success", new OutputFormatterStyle("green", "black"));
 		$output->getFormatter()->setStyle("info", new OutputFormatterStyle("cyan", "black"));
 		$output->getFormatter()->setStyle("comment", new OutputFormatterStyle("blue", "black"));

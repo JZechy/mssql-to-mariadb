@@ -40,14 +40,14 @@ class Table {
 	/**
 	 * @param Column $column
 	 */
-	public function addColumn(Column $column): void {
+	public function addColumn(Column $column) {
 		$this->columns[] = $column;
 	}
 
 	/**
 	 * @param string $name
 	 */
-	public function addPrimaryKey(string $name): void {
+	public function addPrimaryKey(string $name) {
 		$this->primaryKeys[] = $name;
 	}
 
@@ -55,7 +55,7 @@ class Table {
 	 * @param string $key
 	 * @param string $name
 	 */
-	public function addUniqueKey(string $key, string $name): void {
+	public function addUniqueKey(string $key, string $name) {
 		$this->uniqueKeys[$key][] = $name;
 	}
 

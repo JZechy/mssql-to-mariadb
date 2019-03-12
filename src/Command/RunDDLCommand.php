@@ -26,7 +26,7 @@ class RunDDLCommand extends BaseCommand {
 	/**
 	 *
 	 */
-	protected function configure(): void {
+	protected function configure() {
 		$this->setName(self::$defaultName);
 		$this->setDescription("Creates database tables from source database in destination.");
 	}

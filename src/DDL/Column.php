@@ -49,7 +49,7 @@ class Column {
 	/**
 	 * @param mixed $default
 	 */
-	public function setDefault($default): void {
+	public function setDefault($default) {
 		if($default == "getdate") {
 			$default = "now";
 		}
@@ -82,7 +82,7 @@ class Column {
 	/**
 	 * @param bool $autoIncrement
 	 */
-	public function setAutoIncrement(bool $autoIncrement): void {
+	public function setAutoIncrement(bool $autoIncrement) {
 		$this->autoIncrement = $autoIncrement;
 	}
 
