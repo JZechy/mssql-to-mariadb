@@ -19,7 +19,7 @@ class DataType {
 			"varchar", "nvarchar", "char", "text", "ntext", "nchar"
 		],
 		"numeric" => [
-			"smallint", "bigint", "int", "tinyint", "float", "money"
+			"smallint", "bigint", "int", "tinyint", "float", "money", "decimal"
 		],
 		"date" => [
 			"date", "datetime", "datetime2", "time", "timestamp"
